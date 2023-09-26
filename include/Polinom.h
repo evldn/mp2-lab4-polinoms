@@ -12,6 +12,7 @@ public:
 	Polinom operator*(Polinom& p);
 	Polinom operator*(int value);
 	Polinom operator-(Polinom& p);
+	bool operator==(Polinom& p);
 	friend istream& operator >> (istream& in, Polinom& p);
 	friend ostream& operator << (ostream& out, Polinom& p);
 };

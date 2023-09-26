@@ -17,14 +17,38 @@
 using namespace std;
 
 int main() {
-	Polinom p1, p2, p3;
-	ifstream f_in("Polinoms_in.txt");
+	Polinom p1, p2, p3, p4, p5, p6;
+	ifstream f_in("Polinoms_test.txt");
 	f_in >> p1;
 	cout << "P = " << p1 << endl;
 	f_in >> p2;
 	cout << "Q = " << p2 << endl;
+	p3 = p1 + p2;
+	cout << "P + Q = " << p3 << endl << endl;
+	
+	/*f_in >> p4;
+	cout << "R = " << p4 << endl;*/
+	
+	
+	
+	
+	/*Monom m1(1, 1, 0, 0);
+	Monom m2(1, 0, 1, 0);
+	List<Monom> monoms1;
+	monoms1.AddLast(m1);
+	monoms1.AddLast(m2);
+	Polinom p1(monoms1);
+	cout << p1 << endl;
+	Monom m3(1, 1, 0, 0);
+	Monom m4(-1, 0, 1, 0);
+	List<Monom> monoms2;
+	monoms2.AddLast(m3);
+	monoms2.AddLast(m4);
+	Polinom p2(monoms2);
+	cout << p2 << endl;
+	Polinom p3;
 	p3 = p1 * p2;
-	cout << "P * Q = " << p3 << endl;
+	cout << p3;*/
 
 	/*string monom = "12.5x^-10z^5";
 	string polinom = "12.5x^10z^5-2.6x^2y^5+10";

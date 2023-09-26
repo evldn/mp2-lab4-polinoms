@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-const int MAX_POWER = 20;
+const int MAX_POWER = 29;
 
 struct Monom {
 	double coef;
@@ -15,9 +15,11 @@ struct Monom {
 	int getX()const { return ((conv / 1) % MAX_POWER) - 10; }
 	int getY()const { return ((conv / MAX_POWER) % MAX_POWER) - 10; }
 	int getZ()const { return ((conv / (MAX_POWER * MAX_POWER)) % MAX_POWER) - 10; }
-	bool operator==(const Monom& m) { return conv == m.conv; }
-	bool operator<(const Monom& m) { return conv < m.conv; }
-	bool operator>(const Monom& m) { return conv > m.conv; }
+
+	bool operator==(const Monom& m);
+	bool operator!=(const Monom& m);
+	bool operator<(const Monom& m);
+	bool operator>(const Monom& m);
 	friend istream& operator >> (istream& in, Monom& m);
 	friend ostream& operator << (ostream& out, const Monom& m);
 };

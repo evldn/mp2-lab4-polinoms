@@ -16,6 +16,44 @@ Monom& Monom::operator=(const Monom& m) {
 	conv = m.conv;
 	return *this;
 }
+
+
+bool Monom::operator==(const Monom& m) {
+	if ((coef == m.coef) && (conv == m.conv))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Monom::operator!=(const Monom& m) {
+	return !(*this == m);
+}
+bool Monom::operator<(const Monom& m) {
+	if (conv == m.conv)
+	{
+		if (coef < m.coef) {
+			return true;
+		}
+	}
+	else if (conv < m.conv) {
+		return true;
+	}
+	return false;
+}
+bool Monom::operator>(const Monom& m) {
+	if (conv == m.conv)
+	{
+		if (coef > m.coef) {
+			return true;
+		}
+	}
+	else if (conv > m.conv) {
+		return true;
+	}
+	return false;
+}
+
 istream& operator >> (istream& in, Monom& m) {
 	string str;
 	in >> str;
@@ -77,22 +115,28 @@ istream& operator >> (istream& in, Monom& m) {
 }
 ostream& operator << (ostream& out, const Monom& m) {
 	double t;
-	t = m.coef; if (t > 0.0) out << "+";
-	out << t;
-	t = m.getX(); 
-	if (t > 0)
-		out << "x^" << t;
-	else if(t < 0)
-		out << "x^(" << t << ")";
-	t = m.getY();
-	if (t > 0)
-		out << "y^" << t;
-	else if (t < 0)
-		out << "y^(" << t << ")";
-	t = m.getZ();
-	if (t > 0)
-		out << "z^" << t;
-	else if (t < 0)
-		out << "z^(" << t << ")";
+	t = m.coef; 
+	if (t != 0) {
+		if (t > 0.0) out << "+";
+		out << t;
+		t = m.getX();
+		if (t > 0)
+			out << "x^" << t;
+		else if (t < 0)
+			out << "x^(" << t << ")";
+		t = m.getY();
+		if (t > 0)
+			out << "y^" << t;
+		else if (t < 0)
+			out << "y^(" << t << ")";
+		t = m.getZ();
+		if (t > 0)
+			out << "z^" << t;
+		else if (t < 0)
+			out << "z^(" << t << ")";
+	}
+	else {
+		out << "0";
+	}
 	return out;
 }

@@ -14,34 +14,51 @@ Polinom& Polinom::operator=(const Polinom& p) {
 	monoms = p.monoms;
 	return *this;
 }
+bool Polinom::operator==(Polinom& p) {
+	monoms.ClearNull();
+	p.monoms.ClearNull();
+	if (this->monoms.getSize() == p.monoms.getSize()) {
+		Link<Monom>* current_1 = monoms.getHead()->next;
+		Link<Monom>* current_2 = p.monoms.getHead()->next;
+		while ((current_1 != monoms.getHead()) && (current_2 != p.monoms.getHead())) {
+			if (current_1->value != current_2->value) {
+				return false;
+			}
+			current_1 = current_1->next;
+			current_2 = current_2->next;
+		}
+		return true;
+	}
+	return false;
+}
 Polinom Polinom::operator+(Polinom& p) {
 	Polinom new_polinom;
 	Link<Monom>* current_1 = monoms.getHead()->next;
 	Link<Monom>* current_2 = p.monoms.getHead()->next;
 	while ((current_1 != monoms.getHead()) && (current_2 != p.monoms.getHead())) {
-		if (current_1->value == current_2->value) {
+		if (current_1->value.conv == current_2->value.conv) {
 			if (current_1->value.coef + current_2->value.coef != 0) {
-				Monom new_monom(current_1->value.coef + current_2->value.coef, current_1->value.conv);
+				Monom new_monom(current_1->value.coef + current_2->value.coef, current_1->value.getX(), current_1->value.getY(), current_1->value.getZ());
 				new_polinom.monoms.AddLast(new_monom);
 			}
 			current_1 = current_1->next;
 			current_2 = current_2->next;
 		}
-		else if (current_1->value < current_2->value) {
+		else if (current_1->value.conv < current_2->value.conv) {
 			new_polinom.monoms.AddLast(current_1->value);
 			current_1 = current_1->next;
 		}
-		else if (current_1->value > current_2->value) {
+		else if (current_1->value.conv > current_2->value.conv) {
 			new_polinom.monoms.AddLast(current_2->value);
 			current_2 = current_2->next;
 		}
 	}
 	while (current_1 != monoms.getHead()) {
-		new_polinom.monoms.OrderedInsert(current_1->value);
+		new_polinom.monoms.AddLast(current_1->value);
 		current_1 = current_1->next;
 	}
 	while (current_2 != p.monoms.getHead()) {
-		new_polinom.monoms.OrderedInsert(current_2->value);
+		new_polinom.monoms.AddLast(current_2->value);
 		current_2 = current_2->next;
 	}
 	return new_polinom;
@@ -54,7 +71,7 @@ Polinom Polinom::operator*(Polinom& p) {
 			int newx = current_1->value.getX() + current_2->value.getX();
 			int newy = current_1->value.getY() + current_2->value.getY();
 			int newz = current_1->value.getZ() + current_2->value.getZ();
-			int newcoef = current_1->value.coef * current_2->value.coef;
+			double newcoef = current_1->value.coef * current_2->value.coef;
 			int newconv = (newx + 10) + ((newy + 10) * MAX_POWER) + ((newz + 10) * MAX_POWER * MAX_POWER);
 			int flag = 0;
 			for (Link<Monom>* current_3 = new_polinom.monoms.getHead()->next; current_3 != new_polinom.monoms.getHead(); current_3 = current_3->next) {
@@ -67,9 +84,8 @@ Polinom Polinom::operator*(Polinom& p) {
 			if ((flag == 0) && (newcoef != 0))
 			{
 				Monom temp(newcoef, newx, newy, newz);
-				new_polinom.monoms.AddLast(temp);
+				new_polinom.monoms.OrderedInsert(temp);
 			}
-			flag = 0;
 		}
 	}
 	return new_polinom;
@@ -99,7 +115,7 @@ istream& operator >> (istream& in, Polinom& p) {
 	p.monoms.Clear();
 	for (int i = 0; i < str.size(); i++) {
 		if ((str[i] == ' ') || (str[i] == '+') || (str[i] == '-')) {
-			if ((str[i] == '-') && (str[i-1] == '^')) {
+			if ((i > 1) && (str[i] == '-') && (str[i-1] == '^')) {
 				t += str[i];
 				continue;
 			}
@@ -107,7 +123,7 @@ istream& operator >> (istream& in, Polinom& p) {
 				istringstream ss(t);
 				Monom m;
 				ss >> m;
-				p.monoms.AddLast(m);
+				p.monoms.OrderedInsert(m);
 			}
 			t = "";
 			if (str[i] == '-') {
@@ -122,13 +138,15 @@ istream& operator >> (istream& in, Polinom& p) {
 		istringstream ss(t);
 		Monom m;
 		ss >> m;
-		p.monoms.AddLast(m);
+		p.monoms.OrderedInsert(m);
 	}
 	t = "";
 	return in;
 }
 ostream& operator << (ostream& out, Polinom& p) {
 	Iterator<Monom>* i = p.monoms.Iterator();
+	if (!(i->hasNext()))
+		out << "0";
 	while (i->hasNext()) {
 		out << i->Next();
 	}

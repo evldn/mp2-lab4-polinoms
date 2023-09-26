@@ -40,12 +40,14 @@ template <class T>
 class List {
 	Link<T>* head;
 	Link<T>* tail;
+	int size;
 public:
 	List() {
 		Link<T>* link = new Link<T>;
 		link->next = link;
 		head = link;
 		tail = link;
+		size = 0;
 	}
 	List(const List& list) {
 		head = new Link<T>;
@@ -56,6 +58,11 @@ public:
 			AddLast(t->value);
 			t = t->next;
 		}
+		size = list.size;
+	}
+	~List() {
+		Clear();
+		delete head;
 	}
 	List& operator=(const List& list) {
 		if (this == &list) {
@@ -67,29 +74,35 @@ public:
 			AddLast(t->value);
 			t = t->next;
 		}
+		size = list.size;
 		return *this;
 	}
+	int getSize() { return size; }
 	void AddFirst(T value) {
 		Link<T>* link = new Link<T>(value, head->next);
 		if (head->next == head) tail = link;
 		head->next = link;
+		size++;
 	}
 	void AddLast(T value) {
 		Link<T>* link = new Link<T>(value, head);
 		tail->next = link;
 		tail = tail->next;
+		size++;
 	}
 	void DelFirst() {
 		if (head->next == head) throw - 1;
 		if (head->next == tail) tail = head;
 		Link<T>* link = head->next;
 		head->next = link->next;
+		size--;
 		delete link;
 	}
 	void DelLast() {
 		if (head->next == head) throw - 1;
 		if (head->next == tail) {
 			DelFirst();
+			size--;
 			return;
 		}
 		Link<T>* link_1 = tail;
@@ -97,6 +110,7 @@ public:
 		while (link_2->next != tail) link_2->next;
 		link_2->next = head;
 		tail = link_2;
+		size--;
 		delete link_1;
 	}
 	bool Contain(T value) {
@@ -112,18 +126,31 @@ public:
 			DelFirst();
 		}
 	}
+	void ClearNull() {
+		Link<T>* current = head;
+		while (current->next != head) {
+			if (current->next->value == 0) {
+				Link<T>* temp = current->next;
+				current->next = temp->next;
+				delete temp;
+			}
+			current = current->next;
+		}
+	}
 	void OrderedInsert(T value) {
 		Link<T>* link = head;
 		while (link->next != head) {
 			if (link->next->value > value) {
 				Link<T>* new_link = new Link<T>(value, link->next);
 				link->next = new_link;
+				size++;
 				return;
 			}
 			link = link->next;
 		}
 		Link<T>* new_link = new Link<T>(value, head);
 		link->next = new_link;
+		size++;
 	}
 	friend ostream& operator << (ostream& out, List& list) {
 		Link<T>* current = list.head->next;
